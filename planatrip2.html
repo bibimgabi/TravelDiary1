@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelDiary | My Diary</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            position: relative;
+        }
+
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .menu {
+            position: absolute;
+            top: 18px;
+            right: 80px;
+            font-size: 14px;
+            display: flex;
+            flex-direction: row;
+            gap: 100px;
+            padding: 10px;
+        }
+
+        .menu p, .menu a {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .menu p:hover, .menu a:hover {
+            text-decoration: underline;
+        }
+
+        .mytrips {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            font-size: 50px;
+            color: #333;
+        }
+
+        .memory-entry, .tripbox {
+            position: absolute;
+            width: 75%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tripbox {
+            top: 25%;
+            left: 10%;
+        }
+
+        .tripbox:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.03);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 95%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .memory-entry {
+            position: relative;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .memory-entry h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .memory-entry p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .places-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .place-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .place-input {
+            margin-top: 5px;
+            padding: 10px;
+            width: 85%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px;
+            background-color: transparent;
+            color: #ff4d4d;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            color: #e60000;
+        }
+
+        .add-place-btn {
+            padding: 5px 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .add-place-btn:hover {
+            background-color: #555;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body>
+    <h1>TravelDiary <i class="fa-sharp fa-solid fa-book-atlas"></i></h1>
+
+    <div class="menu">
+        <a href="mapaproba11.html">My World Map</a>
+        <a href="pinpage3.html">Pin My Memories</a>
+        <a href="diarypage2.html">My Diary</a>
+        <a href="planatrip2.html">Plan My Trip</a>
+    </div>
+    
+    <div class="mytrips">
+        <p><b>My Future Trips</b></p>
+    </div>
+
+
+    <div class="tripbox" id="tripbox">
+        <p>+ Plan a new trip</p>
+    </div>
+
+    <div id="memoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Plan a New Trip</h2>
+            <form id="memoryForm">
+                <div class="form-group">
+                    <label for="memoryTitle">Trip Title:</label>
+                    <input type="text" id="memoryTitle" name="memoryTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryStartDate">Start Date:</label>
+                    <input type="date" id="memoryStartDate" name="memoryStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryEndDate">End Date:</label>
+                    <input type="date" id="memoryEndDate" name="memoryEndDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryPlace">Place to Visit:</label>
+                    <input type="text" id="memoryPlace" name="memoryPlace" class="place-input" required>
+                </div>
+                <div id="placesContainer" class="places-container"></div>
+                <button type="button" class="add-place-btn" id="addPlaceBtn">+ Add More Places</button>
+                <button type="submit">Save Trip</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="memoryList" class="memory-list" style="position: absolute; top: 50%; left: 10%; width: 75%;"></div>
+
+    <script>
+        var modal = document.getElementById("memoryModal");
+        var tripbox = document.getElementById("tripbox");
+        var closeModal = document.getElementById("closeModal");
+        var memoryList = document.getElementById("memoryList");
+        var noTripsText = document.getElementById("noTripsText");
+        var addPlaceBtn = document.getElementById("addPlaceBtn");
+        var placesContainer = document.getElementById("placesContainer");
+    
+        tripbox.onclick = function() {
+            modal.style.display = "block";
+        }
+    
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    
+        addPlaceBtn.onclick = function() {
+            var placeWrapper = document.createElement("div");
+            placeWrapper.classList.add("place-input-wrapper");
+    
+            var newPlaceInput = document.createElement("input");
+            newPlaceInput.type = "text";
+            newPlaceInput.classList.add("place-input");
+            newPlaceInput.name = "memoryPlace";
+            newPlaceInput.placeholder = "Enter another place";
+    
+            var deleteBtn = document.createElement("button");
+            deleteBtn.classList.add("delete-btn");
+            deleteBtn.textContent = "×";
+            deleteBtn.onclick = function() {
+                placesContainer.removeChild(placeWrapper);
+            }
+    
+            placeWrapper.appendChild(newPlaceInput);
+            placeWrapper.appendChild(deleteBtn);
+            placesContainer.appendChild(placeWrapper);
+        }
+    
+        document.getElementById("memoryForm").onsubmit = function(event) {
+            event.preventDefault();
+    
+            var memoryTitle = document.getElementById("memoryTitle").value;
+            var memoryStartDate = document.getElementById("memoryStartDate").value;
+            var memoryEndDate = document.getElementById("memoryEndDate").value;
+            var placeInputs = document.querySelectorAll("input[name='memoryPlace']");
+            var places = Array.from(placeInputs).map(input => input.value).join(", ");
+ 
+            var newMemory = {
+                title: memoryTitle,
+                startDate: memoryStartDate,
+                endDate: memoryEndDate,
+                places: places
+            };
+    
+            var trips = JSON.parse(localStorage.getItem("trips")) || [];
+            trips.push(newMemory);
+            localStorage.setItem("trips", JSON.stringify(trips));
+    
+            displayTrips();
+    
+            modal.style.display = "none";
+            document.getElementById("memoryForm").reset();
+            placesContainer.innerHTML = "";
+        }
+    
+        function displayTrips() {
+            memoryList.innerHTML = "";
+            var trips = JSON.parse(localStorage.getItem("trips")) || [];
+            trips.forEach(function(trip) {
+                var newMemory = document.createElement("div");
+                newMemory.classList.add("memory-entry");
+    
+
+                var deleteTripBtn = document.createElement("button");
+                deleteTripBtn.classList.add("delete-btn");
+                deleteTripBtn.textContent = "×";
+                deleteTripBtn.onclick = function() {
+                    var updatedTrips = trips.filter(t => t !== trip);
+                    localStorage.setItem("trips", JSON.stringify(updatedTrips));
+                    displayTrips();
+                };
+    
+                newMemory.innerHTML = `
+                    <h3>${trip.title}</h3>
+                    <p><b>From:</b> ${trip.startDate} <b>To:</b> ${trip.endDate}</p>
+                    <p><b>Places to Visit:</b> ${trip.places}</p>
+                `;
+    
+                newMemory.appendChild(deleteTripBtn);
+                memoryList.appendChild(newMemory);
+            });
+    
+            if (trips.length === 0) {
+                noTripsText.style.display = "block";
+            } else {
+                noTripsText.style.display = "none";
+            }
+        }
+    
+        window.onload = function() {
+            displayTrips();
+        }
+    </script>
+    
+</body>
+</html>

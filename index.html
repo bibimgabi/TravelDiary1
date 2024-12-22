@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TravelDiary | My World Map</title>
+  <style>
+    * {
+        margin: 10;
+        padding: 10;
+        box-sizing: border-box;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h1 {
+        position: absolute;
+        top: 20px;
+        left: 30px;
+        margin: 0;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .menu {
+        position: absolute;
+        top: 18px;
+        right: 80px;   
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        display: flex;
+        flex-direction: row;
+        gap: 100px;
+        padding: 10px;
+    }
+
+    .menu p, .menu a {
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+    }
+
+    .menu p:hover, .menu a:hover {
+        text-decoration: underline;
+    }
+
+    #vmap {
+      width: 85%;
+      height: 70%;
+      margin: auto;
+      border: 1px solid #818181;
+    }
+
+    .visited-percentage {
+      position: absolute;
+      bottom: 10vh;
+      right: 7.5vw;
+      background-color: #ffffff;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      border: #333;
+    }
+
+    .reset{
+      position: absolute;
+      bottom: 10vh;
+      left: 12vh;
+    }
+
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.world.js"></script>
+  <script>
+    jQuery(document).ready(function () {
+      const totalCountries = 195;
+      const localStorageKey = "selectedCountries";
+  
+      const savedCountries = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+      const selectedCountries = { ...savedCountries };
+  
+      function updatePercentage() {
+        const visitedCount = Object.keys(selectedCountries).length;
+        const percentage = ((visitedCount / totalCountries) * 100).toFixed(0);
+        jQuery('#visited-percentage').text(`World Visited: ${percentage}%`);
+      }
+  
+      function updateMapColors() {
+        for (const code in selectedCountries) {
+          jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#c9dfaf' });
+        }
+      }
+  
+      jQuery('#vmap').vectorMap({
+        map: 'world_en',
+        backgroundColor: '#d4dadc',
+        borderColor: '#818181',
+        borderOpacity: 0.3,
+        borderWidth: 0.8,
+        color: '#f4f4f4',
+        hoverColor: '#c9dfaf',
+        enableZoom: true,
+        showTooltip: true,
+        onRegionClick: function (event, code, region) {
+          if (selectedCountries[code]) {
+            delete selectedCountries[code];
+            jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#f4f4f4' });
+          } else {
+            selectedCountries[code] = true;
+            jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#c9dfaf' });
+          }
+  
+          localStorage.setItem(localStorageKey, JSON.stringify(selectedCountries));
+  
+          updatePercentage();
+        },
+        onRegionOver: function (event, code) {
+          if (selectedCountries[code]) {
+            jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#c9dfaf' });
+          }
+        },
+        onRegionOut: function (event, code) {
+          if (selectedCountries[code]) {
+            jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#c9dfaf' });
+          } else {
+            jQuery('#vmap').vectorMap('set', 'colors', { [code]: '#f4f4f4' });
+          }
+        },
+      });
+
+      updateMapColors();
+      updatePercentage();
+    });
+  </script>
+  
+</head>
+<body>
+  <h1>TravelDiary <i class="fa-sharp fa-solid fa-book-atlas"></i></h1>
+  <div id="vmap"></div>
+
+  <div class="menu">
+    <a href="mapaproba11.html">My World Map</a>
+    <a href="pinpage3.html">Pin My Memories</a>
+    <a href="diarypage.html">My Diary</a>
+    <a href="planatrip2.html">Plan My Trip</a>
+  </div>
+
+  <div id="visited-percentage" class="visited-percentage">World Visited: 0%</div>
+  
+  <div class="reset">
+    <button onclick="resetMap()">Reset Map</button>
+  </div>
+
+
+<script>
+  function resetMap() {
+    localStorage.removeItem("selectedCountries");
+    location.reload();
+  }
+</script>
+</body>
+</html>

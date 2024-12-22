@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelDiary | My Diary</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            position: relative;
+        }
+
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            margin: 0;
+            font-size: 24px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333;
+        }
+
+        .menu {
+            position: absolute;
+            top: 18px;
+            right: 80px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            display: flex;
+            flex-direction: row;
+            gap: 100px;
+            padding: 10px;
+        }
+
+        .menu p, .menu a {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .menu p:hover, .menu a:hover {
+            text-decoration: underline;
+        }
+
+        .mytrips {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            font-size: 50px;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+            color: #333;
+        }
+
+        .memorybox {
+            position: absolute;
+            top: 25%;
+            left: 10%;
+            width: 75%;
+            cursor: pointer;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .memorybox:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.03);
+        }
+
+        .memory-entry {
+            width: 75%;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px; 
+            text-align: left;
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .memory-entry:hover {
+            background-color: #ffffff;
+            transform: scale(1.03);
+        }
+
+        .memory-entry img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .viewPhotosButton {
+            padding: 8px 16px;
+            background-color: #333; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+}
+
+        .viewPhotosButton:hover {
+        background-color: #555; 
+        }
+
+
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 95%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #memoryList {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 45%;
+            left: 10%;
+        }
+
+        .gallery-modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .gallery-modal img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .gallery-images-container {
+            display: flex;
+            flex-direction: column;
+            max-height: 80vh;
+            overflow-y: auto; 
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>TravelDiary <i class="fa-sharp fa-solid fa-book-atlas"></i></h1>
+
+    <div class="menu">
+        <a href="mapaproba11.html">My World Map</a>
+        <a href="pinpage3.html">Pin My Memories</a>
+        <a href="diarypage2.html">My Diary</a>
+        <a href="planatrip2.html">Plan My Trip</a>
+    </div>
+
+    <div class="mytrips">
+        <p><b>My Trips</b></p>
+    </div>
+
+    <div class="memorybox" id="memorybox">
+        <p>+ Create a new memory</p>
+    </div>
+
+    <div id="memoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Create a New Memory</h2>
+            <form id="memoryForm">
+                <div class="form-group">
+                    <label for="memoryTitle">Memory Title:</label>
+                    <input type="text" id="memoryTitle" name="memoryTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryDescription">Description:</label>
+                    <textarea id="memoryDescription" name="memoryDescription" rows="4" required></textarea>
+                </div>
+                <div class="form-group" id="imageUploadContainer">
+                    <label for="memoryImage">Upload Image:</label>
+                    <input type="file" id="memoryImage" name="memoryImage" accept="image/*">
+                </div>
+                <button type="button" id="addImageButton">Add Another Picture</button>
+                <button type="submit">Save Memory</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="memoryList" class="memory-list"></div>
+
+    <div id="galleryModal" class="gallery-modal">
+        <span class="close" id="closeGallery">&times;</span>
+        <div class="gallery-images-container" id="galleryImages"></div>
+    </div>
+
+    <script>
+        var modal = document.getElementById("memoryModal");
+        var memorybox = document.getElementById("memorybox");
+        var closeModal = document.getElementById("closeModal");
+        var memoryList = document.getElementById("memoryList");
+        var addImageButton = document.getElementById("addImageButton");
+        var imageUploadContainer = document.getElementById("imageUploadContainer");
+        var galleryModal = document.getElementById("galleryModal");
+        var galleryImages = document.getElementById("galleryImages");
+        var closeGallery = document.getElementById("closeGallery");
+    
+        memorybox.onclick = function() {
+            modal.style.display = "block";
+        }
+    
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    
+        addImageButton.onclick = function() {
+            var newImageInput = document.createElement("input");
+            newImageInput.type = "file";
+            newImageInput.name = "memoryImage";
+            newImageInput.accept = "image/*";
+            imageUploadContainer.appendChild(newImageInput);
+        }
+    
+        document.getElementById("memoryForm").onsubmit = function(event) {
+            event.preventDefault();
+    
+            var memoryTitle = document.getElementById("memoryTitle").value;
+            var memoryDescription = document.getElementById("memoryDescription").value;
+            var memoryImages = document.querySelectorAll("input[type='file']");
+            var imageArray = [];
+    
+            Array.from(memoryImages).forEach(function(input) {
+                var memoryImage = input.files[0];
+                if (memoryImage) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        imageArray.push(e.target.result);
+                    }
+                    reader.readAsDataURL(memoryImage);
+                }
+            });
+    
+            var memories = JSON.parse(localStorage.getItem("memories")) || [];
+            var newMemory = {
+                title: memoryTitle,
+                description: memoryDescription,
+                images: imageArray
+            };
+            memories.push(newMemory);
+            localStorage.setItem("memories", JSON.stringify(memories));
+    
+            displayMemories();
+            modal.style.display = "none";
+            document.getElementById("memoryForm").reset();
+        }
+    
+        function displayMemories() {
+            memoryList.innerHTML = '';
+            var memories = JSON.parse(localStorage.getItem("memories")) || [];
+            memories.forEach(function(memory, index) {
+                var newMemory = document.createElement("div");
+                newMemory.classList.add("memory-entry");
+                var memoryContent = "<div><p><b>" + memory.title + "</b></p><p>" + memory.description + "</p></div>";
+                var imageArray = memory.images;
+    
+                newMemory.innerHTML = memoryContent + 
+                    "<button class='viewPhotosButton'>View Photos</button>" +
+                    "<button class='deleteButton' data-index='" + index + "'>Delete</button>";
+    
+                memoryList.appendChild(newMemory);
+    
+                newMemory.querySelector('.viewPhotosButton').onclick = function() {
+                    displayGallery(imageArray);
+                };
+    
+                newMemory.querySelector('.deleteButton').onclick = function() {
+                    deleteMemory(index);
+                };
+            });
+        }
+    
+        function displayGallery(images) {
+            galleryImages.innerHTML = '';
+            images.forEach(function(imageSrc) {
+                var imgElement = document.createElement("img");
+                imgElement.src = imageSrc;
+                galleryImages.appendChild(imgElement);
+            });
+            galleryModal.style.display = "flex";
+        }
+    
+        function deleteMemory(index) {
+            var memories = JSON.parse(localStorage.getItem("memories")) || [];
+            memories.splice(index, 1);
+            localStorage.setItem("memories", JSON.stringify(memories));
+    
+            displayMemories();
+        }
+    
+        closeGallery.onclick = function() {
+            galleryModal.style.display = "none";
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == galleryModal) {
+                galleryModal.style.display = "none";
+            }
+        }
+    
+        window.onload = displayMemories;
+    </script>
+    
+</body>
+</html>
